@@ -61,14 +61,6 @@ class VideoPlayer():
         self.mediaplayer.set_media(self.media)
         self.media.parse()
 
-        # if platform.system() == "Linux": # for Linux using the X Server
-        #     self.mediaplayer.set_xwindow(int(self.videoframe.winId()))
-        # elif platform.system() == "Windows": # for Windows
-        #     self.mediaplayer.set_hwnd(int(self.videoframe.winId()))
-        #     print("using behaviour mitigation for windows: borderless fullscreen: windows")
-        # elif platform.system() == "Darwin": # for MacOS
-        #     self.mediaplayer.set_nsobject(int(self.videoframe.winId()))
-
         self.play_pause()
 
     def play_pause(self):
@@ -150,19 +142,6 @@ class DisplayWindow(QtWidgets.QMainWindow):
 
         self.widget.setLayout(self.vboxlayout)
 
-        menu_bar = self.menuBar()
-
-        # File menu
-        file_menu = menu_bar.addMenu("File")
-
-        # Add actions to file menu
-        open_action = QtWidgets.QAction("Load Video", self)
-        close_action = QtWidgets.QAction("Close App", self)
-        file_menu.addAction(open_action)
-        file_menu.addAction(close_action)
-
-        #open_action.triggered.connect(self.open_file)
-        close_action.triggered.connect(sys.exit)
 
         self.timer = QtCore.QTimer(self)
         self.timer.setInterval(100)
@@ -284,16 +263,17 @@ class DisplayWindow(QtWidgets.QMainWindow):
                 self.stop()
 
 def start_client():
-    """Entry point for our simple vlc player
-    """
+    #Entrypoint for our gui thread
     app = QtWidgets.QApplication(sys.argv)
     dw = DisplayWindow()
     dw.showFullScreen()
     dw.resize(1280, 720)
+
     # Entrypoint for our server thread
     httpd = WebServer()
     httpd.run()
     httpd.set_player(dw.get_vlc())
+
     app.exec_()
 
 
